@@ -1,0 +1,89 @@
+Power Query M scripts — one per table, with column types already set.
+
+Como usar: no Power BI Desktop, "Página Inicial" > "Transformar Dados" > "Nova Fonte" >
+"Consulta em Branco". Depois "Editor Avançado" (View > Advanced Editor) e cole o bloco
+correspondente. Repita para as 4 tabelas. Renomeie cada consulta (painel esquerdo) para
+o nome da tabela (fact_streams, dim_artist, dim_track, dim_date) antes de "Fechar e Aplicar".
+
+Os caminhos já apontam para o local correto no seu disco.
+
+============================================================
+fact_streams
+============================================================
+let
+    Source = Csv.Document(File.Contents("D:\projetos\spotify-analytics\data\processed\fact_streams.csv"),[Delimiter=",", Columns=11, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{
+        {"stream_id", type text},
+        {"date_key", type date},
+        {"time", type time},
+        {"artist_id", type text},
+        {"track_id", type text},
+        {"ms_played", Int64.Type},
+        {"platform", type text},
+        {"skipped", type logical},
+        {"shuffle", type logical},
+        {"reason_start", type text},
+        {"reason_end", type text}
+    })
+in
+    #"Changed Type"
+
+============================================================
+dim_artist
+============================================================
+let
+    Source = Csv.Document(File.Contents("D:\projetos\spotify-analytics\data\processed\dim_artist.csv"),[Delimiter=",", Columns=6, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{
+        {"artist_id", type text},
+        {"artist_name", type text},
+        {"total_hours", type number},
+        {"total_plays", Int64.Type},
+        {"first_play_date", type date},
+        {"last_play_date", type date}
+    })
+in
+    #"Changed Type"
+
+============================================================
+dim_track
+============================================================
+let
+    Source = Csv.Document(File.Contents("D:\projetos\spotify-analytics\data\processed\dim_track.csv"),[Delimiter=",", Columns=4, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{
+        {"track_id", type text},
+        {"track_name", type text},
+        {"artist_id", type text},
+        {"album_name", type text}
+    })
+in
+    #"Changed Type"
+
+============================================================
+dim_date
+============================================================
+let
+    Source = Csv.Document(File.Contents("D:\projetos\spotify-analytics\data\processed\dim_date.csv"),[Delimiter=",", Columns=7, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{
+        {"date_key", type date},
+        {"year", Int64.Type},
+        {"month", Int64.Type},
+        {"day", Int64.Type},
+        {"weekday_name", type text},
+        {"is_weekend", type logical},
+        {"week_of_year", Int64.Type}
+    })
+in
+    #"Changed Type"
+
+============================================================
+Depois de aplicar as 4:
+============================================================
+1. Vá em "Modelagem" > "Gerenciar Relacionamentos" e confirme (ou crie manualmente):
+   - fact_streams[artist_id] -> dim_artist[artist_id]  (Muitos-para-Um)
+   - fact_streams[track_id]  -> dim_track[track_id]     (Muitos-para-Um)
+   - fact_streams[date_key]  -> dim_date[date_key]       (Muitos-para-Um)
+2. Clique com o botão direito em dim_date > "Marcar como Tabela de Datas" > coluna date_key.

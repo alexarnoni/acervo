@@ -52,16 +52,16 @@ pytest tests/ -v
 Podcasts e audiobooks são identificados e separados dos dados de música (não entram nas
 tabelas fato/dimensão, já que o foco do projeto é catálogo musical).
 
-## Medidas DAX sugeridas para o Power BI
+## Montando o Power BI rápido
 
-```dax
-Total Horas = SUM(fact_streams[ms_played]) / 3600000
-Total Plays = COUNTROWS(fact_streams)
-Skip Rate = DIVIDE(CALCULATE(COUNTROWS(fact_streams), fact_streams[skipped] = TRUE), [Total Plays])
-Artistas Distintos = DISTINCTCOUNT(fact_streams[artist_id])
-Faixas Distintas = DISTINCTCOUNT(fact_streams[track_id])
-Média ms por Play = AVERAGE(fact_streams[ms_played])
-```
+A pasta [`powerbi/`](powerbi/) tem tudo pronto pra colar, sem precisar clicar tabela por
+tabela na importação:
+
+- [`powerbi/m_queries.txt`](powerbi/m_queries.txt) — script Power Query M por tabela (Editor
+  Avançado), já com os tipos de coluna certos
+- [`powerbi/measures.dax`](powerbi/measures.dax) — todas as medidas DAX prontas
+- [`powerbi/visuals_guide.md`](powerbi/visuals_guide.md) — quais visuais montar, em ordem de
+  prioridade, pra contar a história do relatório
 
 ## Dashboard
 

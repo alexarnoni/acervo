@@ -1,0 +1,42 @@
+-- DAX measures ready to paste into Power BI (create as new measures on fact_streams).
+-- Copie cada bloco, clique com o botão direito em fact_streams > "Nova Medida", cole e confirme.
+
+Total Horas =
+SUM(fact_streams[ms_played]) / 3600000
+
+Total Plays =
+COUNTROWS(fact_streams)
+
+Artistas Distintos =
+DISTINCTCOUNT(fact_streams[artist_id])
+
+Faixas Distintas =
+DISTINCTCOUNT(fact_streams[track_id])
+
+Media Segundos por Play =
+AVERAGE(fact_streams[ms_played]) / 1000
+
+Skip Rate =
+DIVIDE(
+    CALCULATE(COUNTROWS(fact_streams), fact_streams[skipped] = TRUE),
+    [Total Plays]
+)
+
+-- Skip Rate confiável só a partir de 2022 (ver limitação no relatório).
+Skip Rate 2022+ =
+CALCULATE(
+    [Skip Rate],
+    dim_date[year] >= 2022
+)
+
+-- Ranking de artista dominante do ano, para destacar a virada 2025.
+Top Artista do Ano =
+VAR RankTable =
+    ADDCOLUMNS(
+        VALUES(dim_artist[artist_name]),
+        "Horas", [Total Horas]
+    )
+VAR TopRow =
+    TOPN(1, RankTable, [Horas], DESC)
+RETURN
+    MAXX(TopRow, dim_artist[artist_name])
