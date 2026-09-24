@@ -98,7 +98,7 @@ spotify-analytics/
 - Modelos de machine learning ou detecção de anomalia avançada
 - Deploy
 
-## Dashboard web (spotify.alexarnoni.com)
+## Dashboard web (musica.alexarnoni.com)
 
 Camada pública e somente leitura do portfólio: `frontend/` (Vanilla JS + Chart.js) → `backend/` (FastAPI) → PostgreSQL com o mesmo schema estrela gerado pelo pipeline.
 O prompt de origem está em [`docs/prompt_spotify_site.md`](docs/prompt_spotify_site.md).
@@ -125,6 +125,6 @@ Testes da API: `cd backend && pip install -r requirements-dev.txt && pytest`
 
 1. Na VM: clone o repo, `cp .env.example .env` e troque `POSTGRES_PASSWORD` e `CORS_ORIGINS`.
 2. Copie `data/processed/*.csv` para a VM (não são versionados) e rode `docker compose up -d db api`, depois o `load_data.py`.
-3. Nginx do host: use `nginx/production.conf.example` (proxy para `127.0.0.1:8000`) — em produção mapeie a porta da API no compose (`ports: ["127.0.0.1:8000:8000"]`).
+3. Nginx do host: use `nginx/production.conf.example` (proxy para `127.0.0.1:$API_PORT` (padrão 8010; confira se está livre com `ss -tlnp`)); ajuste a porta no arquivo se mudar `API_PORT`.
 4. Cloudflare DNS: registro do subdomínio da API apontando para o IP da VM (proxy ligado); libere 80/443 na Security List da OCI.
-5. Cloudflare Pages: publique `frontend/` e edite `frontend/config.js` (`API_BASE`) com a URL da API. Aponte `spotify.alexarnoni.com` para o projeto Pages.
+5. Cloudflare Pages: publique `frontend/` e edite `frontend/config.js` (`API_BASE`) com a URL da API. Aponte `musica.alexarnoni.com` para o projeto Pages.

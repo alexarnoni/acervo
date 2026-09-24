@@ -14,7 +14,7 @@ from . import queries
 CORS_ORIGINS = [
     o.strip()
     for o in os.getenv(
-        "CORS_ORIGINS", "https://alexarnoni.com,https://spotify.alexarnoni.com,http://localhost:8081"
+        "CORS_ORIGINS", "https://alexarnoni.com,https://musica.alexarnoni.com,http://localhost:8081"
     ).split(",")
     if o.strip()
 ]

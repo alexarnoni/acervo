@@ -1,4 +1,4 @@
-# Oracle VM: nginx do host como reverse proxy da API (container em 127.0.0.1:8000).
+# Oracle VM: nginx do host como reverse proxy da API (porta = API_PORT do .env, padrao 8010).
 # O frontend fica no Cloudflare Pages; aqui so a API.
 # Copie para /etc/nginx/sites-available/spotify-api e ative com symlink em sites-enabled.
 
@@ -6,13 +6,13 @@ limit_req_zone $binary_remote_addr zone=spotify_api:10m rate=30r/m;
 
 server {
     listen 80;
-    server_name api-spotify.alexarnoni.com;   # ajuste ao seu subdominio
+    server_name api-musica.alexarnoni.com;   # ajuste ao seu subdominio
 
     # Cloudflare (proxy laranja) termina o TLS; para a origem, rode certbot ou use Origin Certificate.
     location / {
         limit_req zone=spotify_api burst=40 nodelay;
         limit_req_status 429;
-        proxy_pass http://127.0.0.1:8000;
+        proxy_pass http://127.0.0.1:8010;
         proxy_set_header Host $host;
         # IP real do visitante vindo da Cloudflare
         proxy_set_header X-Real-IP $http_cf_connecting_ip;
