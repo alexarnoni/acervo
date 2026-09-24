@@ -1,4 +1,4 @@
-# Spotify Analytics
+# Escuta
 
 Projeto de portfólio para vaga de Data Analyst júnior: transforma o histórico completo do
 Spotify Extended Streaming History (2014-2026, ~413 mil eventos de reprodução) em um modelo
@@ -106,7 +106,7 @@ spotify-analytics/
 - Modelos de machine learning ou detecção de anomalia avançada
 - Deploy
 
-## Escuta: dashboard web (escuta.alexarnoni.com)
+## Dashboard web (escuta.alexarnoni.com)
 
 Camada pública e somente leitura do portfólio: `frontend/` (Vanilla JS + Chart.js) → `backend/` (FastAPI) → PostgreSQL com o mesmo schema estrela gerado pelo pipeline.
 
