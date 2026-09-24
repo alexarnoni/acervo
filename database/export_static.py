@@ -30,6 +30,8 @@ EXPORTS = {
     "top-artists": lambda: queries.top_artists(15),
     "top-tracks": lambda: queries.top_tracks(12),
     "obsession-days": lambda: queries.obsession_days(12),
+    "story": lambda: queries.story(),
+    "endings": lambda: queries.endings(),
     "skip-rate": lambda: queries.skip_rate(20),
 }
 

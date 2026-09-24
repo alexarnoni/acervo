@@ -13,7 +13,7 @@ def summary() -> dict:
                COUNT(*) AS total_plays,
                COUNT(DISTINCT f.artist_id) AS unique_artists,
                COUNT(DISTINCT f.track_id) AS unique_tracks,
-               ROUND(AVG(f.skipped::int)::numeric, 4)::float AS skip_rate,
+               ROUND(AVG((f.reason_end = 'fwdbtn')::int)::numeric, 4)::float AS skip_rate,
                MIN(f.date_key) AS first_date,
                MAX(f.date_key) AS last_date,
                COUNT(DISTINCT f.date_key) AS active_days
@@ -155,11 +155,85 @@ def obsession_days(limit: int) -> list[dict]:
 def skip_rate(limit: int) -> list[dict]:
     return fetch_all(
         """
-        SELECT a.artist_name, COUNT(*) AS plays, SUM(f.skipped::int) AS skips,
-               ROUND(AVG(f.skipped::int)::numeric, 4)::float AS skip_rate
+        SELECT a.artist_name, COUNT(*) AS plays, SUM((f.reason_end = 'fwdbtn')::int) AS skips,
+               ROUND(AVG((f.reason_end = 'fwdbtn')::int)::numeric, 4)::float AS skip_rate
         FROM fact_streams f JOIN dim_artist a USING (artist_id)
         GROUP BY a.artist_id, a.artist_name
         ORDER BY plays DESC LIMIT %s
         """,
         (limit,),
     )
+
+
+def story() -> dict:
+    """Fatos para a narrativa: dominancia de um artista, exploracao, ritmo e habitos."""
+    top = fetch_one(
+        """
+        SELECT a.artist_id, a.artist_name FROM fact_streams f JOIN dim_artist a USING (artist_id)
+        GROUP BY a.artist_id, a.artist_name ORDER BY SUM(f.ms_played) DESC LIMIT 1
+        """
+    )
+    share = fetch_all(
+        """
+        SELECT d.year,
+               ROUND((100.0 * SUM(f.ms_played) FILTER (WHERE f.artist_id = %s) / SUM(f.ms_played))::numeric, 1)::float AS share
+        FROM fact_streams f JOIN dim_date d USING (date_key) GROUP BY d.year ORDER BY d.year
+        """,
+        (top["artist_id"],),
+    )
+    new_artists = fetch_all(
+        """
+        SELECT EXTRACT(YEAR FROM first_play)::int AS year, COUNT(*) AS new_artists
+        FROM (SELECT artist_id, MIN(date_key) AS first_play FROM fact_streams GROUP BY artist_id) t
+        GROUP BY 1 ORDER BY 1
+        """
+    )
+    per_day = fetch_all(
+        """
+        SELECT d.year, ROUND((SUM(f.ms_played) / 3600000.0 / COUNT(DISTINCT f.date_key))::numeric, 2)::float AS hours_per_day
+        FROM fact_streams f JOIN dim_date d USING (date_key) GROUP BY d.year ORDER BY d.year
+        """
+    )
+    night = fetch_one(
+        """
+        SELECT ROUND((100.0 * SUM(ms_played) FILTER (WHERE EXTRACT(HOUR FROM time) < 6) / SUM(ms_played))::numeric, 1)::float AS night_share
+        FROM fact_streams
+        """
+    )
+    streak = fetch_one(
+        """
+        WITH d AS (SELECT DISTINCT date_key FROM fact_streams),
+             g AS (SELECT date_key, date_key - (ROW_NUMBER() OVER (ORDER BY date_key))::int AS grp FROM d)
+        SELECT MIN(date_key)::text AS start, MAX(date_key)::text AS "end", COUNT(*) AS days
+        FROM g GROUP BY grp ORDER BY days DESC LIMIT 1
+        """
+    )
+    biggest = fetch_one(
+        """
+        SELECT date_key::text AS date, ROUND((SUM(ms_played) / 3600000.0)::numeric, 1)::float AS hours
+        FROM fact_streams GROUP BY date_key ORDER BY SUM(ms_played) DESC LIMIT 1
+        """
+    )
+    return {
+        "top_artist": top["artist_name"],
+        "share_by_year": share,
+        "new_artists_by_year": new_artists,
+        "hours_per_day_by_year": per_day,
+        "night_share": night["night_share"],
+        "longest_streak": streak,
+        "biggest_day": biggest,
+    }
+
+
+def endings() -> dict:
+    """Como as faixas comecam e terminam (reason_start / reason_end)."""
+    def dist(col: str) -> list[dict]:
+        return fetch_all(
+            f"""
+            SELECT COALESCE({col}, 'unknown') AS reason,
+                   ROUND((100.0 * COUNT(*) / SUM(COUNT(*)) OVER ())::numeric, 1)::float AS share
+            FROM fact_streams GROUP BY 1 ORDER BY 2 DESC
+            """
+        )
+
+    return {"start": dist("reason_start"), "end": dist("reason_end")}

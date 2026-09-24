@@ -44,6 +44,10 @@ pytest tests/ -v
 
 Em dez/2018 e fev/2019 a conta foi emprestada a uma amiga. Esses plays (Ariana Grande, Henrique & Juliano, Marília Mendonça e Maiara & Maraisa, só dentro dessas janelas) são removidos no pipeline por `drop_borrowed_listening` em `src/transform.py` (407 plays, ~18 h). A lista está em `BORROWED_ACCOUNT_WINDOWS`.
 
+### Skip
+
+O campo `skipped` do export só vem preenchido em alguns períodos (0% em 2017–2021), então o site define skip como o play encerrado no botão avançar (`reason_end = 'fwdbtn'`), que existe em todos os anos.
+
 ## Modelo de dados (esquema estrela)
 
 | Tabela | Grão | Chave |

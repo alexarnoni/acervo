@@ -117,6 +117,16 @@ def api_obsession(limit: int = Query(12, ge=1, le=50)):
     return cached(queries.obsession_days, limit)
 
 
+@app.get("/api/story")
+def api_story():
+    return cached(queries.story)
+
+
+@app.get("/api/endings")
+def api_endings():
+    return cached(queries.endings)
+
+
 @app.get("/api/skip-rate")
 def api_skip_rate(limit: int = Query(20, ge=1, le=50)):
     return cached(queries.skip_rate, limit)

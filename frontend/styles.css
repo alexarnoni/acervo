@@ -36,6 +36,14 @@ main{max-width:1080px;margin:0 auto;padding:40px 24px 96px}
 .card b{display:block;font-size:clamp(26px,3.4vw,34px);font-weight:800;color:var(--green);font-variant-numeric:tabular-nums;line-height:1.1}
 .card span{color:var(--muted);font-size:14px}
 
+.story .chap{margin-top:36px;max-width:780px}
+.chap h3{display:flex;align-items:center;gap:12px;color:var(--ink);font-size:21px;margin:0 0 8px}
+.chap h3 span{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--green);color:#04150a;font-size:15px;font-weight:800;flex:none}
+.chap p{font-size:18px;line-height:1.6;color:#cfd6d2}
+.chap p b{color:var(--green);font-weight:700}
+.chart.short{height:200px;margin-top:14px}
+.bl.nobar li{grid-template-columns:28px minmax(0,1fr) 80px}
+.bl.nobar li .tr{display:none}
 .blk{margin-top:64px;padding-top:20px;border-top:1px solid var(--line)}
 .blk>h2{margin-bottom:12px}
 .chart{position:relative;height:300px;margin-top:12px}

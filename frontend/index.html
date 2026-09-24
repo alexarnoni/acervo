@@ -5,12 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Spotify Analytics · Alexandre Arnoni</title>
 <meta name="description" content="12 anos de histórico de escuta no Spotify, modelados em schema estrela e servidos por FastAPI + PostgreSQL.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Música Analytics · 12 anos de música, em dados">
+<meta property="og:description" content="Cada play desde 2014, limpo em Python, modelado em estrela e contado em gráficos.">
+<meta property="og:url" content="https://musica.alexarnoni.com/">
+<meta name="twitter:card" content="summary">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <header class="top"><div class="in">
   <a class="brand" href="#top"><span class="dot" aria-hidden="true"></span>Música Analytics</a>
   <nav aria-label="Seções">
+    <a href="#historia">A história</a>
     <a href="#tempo">Ao longo do tempo</a>
     <a href="#habitos">Hábitos</a>
     <a href="#rankings">Rankings</a>
@@ -32,6 +38,16 @@
   <div id="error" class="error" hidden></div>
 
   <section class="cards" id="cards" aria-label="Resumo"></section>
+
+  <section class="blk story" id="historia">
+    <h2>A história em cinco capítulos</h2>
+    <p class="note">Os números vêm dos dados; o texto se ajusta a eles.</p>
+    <article class="chap"><h3><span>1</span>Uma banda que virou casa</h3><p id="s1"></p><div class="chart short"><canvas id="c-share"></canvas></div></article>
+    <article class="chap"><h3><span>2</span>Da fidelidade à curiosidade</h3><p id="s2"></p><div class="chart short"><canvas id="c-new"></canvas></div></article>
+    <article class="chap"><h3><span>3</span>O ritmo aumentou</h3><p id="s3"></p><div class="chart short"><canvas id="c-pace"></canvas></div></article>
+    <article class="chap"><h3><span>4</span>Uma coruja com rotina</h3><p id="s4"></p></article>
+    <article class="chap"><h3><span>5</span>A virada</h3><p id="s5"></p></article>
+  </section>
 
   <section class="blk" id="tempo"><h2>Horas por ano</h2><div class="chart"><canvas id="c-year"></canvas></div></section>
 
@@ -58,7 +74,10 @@
 
   <section class="blk" id="curiosidades"><h2>Dias de obsessão</h2><p class="note">Dias em que uma mesma música tocou muitas vezes.</p><div class="tablewrap"><table id="t-obsession"><thead><tr><th>Data</th><th>Música</th><th>Artista</th><th class="n">Plays</th></tr></thead><tbody></tbody></table></div></section>
 
-  <section class="blk"><h2>Taxa de skip por artista</h2><p class="note">Artistas mais ouvidos; skip = faixa pulada antes do fim.</p><ol class="bl" id="l-skip"></ol></section>
+  <section class="blk"><h2>Como as faixas começam e terminam</h2><p class="note">O que me fez começar e o que encerrou cada play.</p>
+    <div class="cols"><div><h3>Começou por</h3><ol class="bl nobar" id="l-start"></ol></div><div><h3>Terminou por</h3><ol class="bl nobar" id="l-end"></ol></div></div></section>
+
+  <section class="blk"><h2>Taxa de skip por artista</h2><p class="note">Artistas mais ouvidos; skip = faixa encerrada no botão avançar.</p><ol class="bl" id="l-skip"></ol></section>
 
   <footer class="foot">
     <div class="foot-grid">

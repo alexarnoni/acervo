@@ -111,16 +111,80 @@
     });
   }
 
+  // paragrafo com destaques: partes normais via txt("..."), o resto vira <b>
+  const txt = (t) => ({ t });
+  const para = (id, ...parts) => {
+    const root = document.getElementById(id);
+    parts.forEach((p) => {
+      if (p && p.t !== undefined) root.append(document.createTextNode(p.t));
+      else root.append(el("b", null, String(p)));
+    });
+  };
+
+  function story(st, dominantRows) {
+    const last = st.share_by_year[st.share_by_year.length - 1].year; // ultimo ano e parcial
+    const share = st.share_by_year.filter((r) => r.year < last);
+    const peak = share.reduce((m, r) => (r.share > m.share ? r : m));
+    const now = share[share.length - 1];
+    para("s1", st.top_artist, txt(" foi a trilha de quase tudo: em "), peak.year, txt(" chegou a "), `${nf1.format(peak.share)}%`, txt(" de todas as horas do ano. Em "), now.year, txt(", caiu para "), `${nf1.format(now.share)}%`, txt("."));
+    bar("c-share", share.map((r) => r.year), share.map((r) => r.share), "% das horas do ano", {
+      type: "line", ds: { tension: 0.25 }, options: { scales: { y: { ticks: { callback: (v) => v + "%" } } } },
+    });
+
+    const nw = st.new_artists_by_year.filter((r) => r.year >= 2017 && r.year < last);
+    const low = nw.reduce((m, r) => (r.new_artists < m.new_artists ? r : m));
+    const hi = nw.reduce((m, r) => (r.new_artists > m.new_artists ? r : m));
+    para("s2", txt("Depois do começo, o gosto foi se fechando: em "), low.year, txt(" só "), nf.format(low.new_artists), txt(" artistas novos entraram na rotação. Em "), hi.year, txt(" foram "), nf.format(hi.new_artists), txt(", o maior número desde então."));
+    bar("c-new", nw.map((r) => r.year), nw.map((r) => r.new_artists), "Artistas novos");
+
+    const pd = st.hours_per_day_by_year.filter((r) => r.year < last);
+    const early = pd.filter((r) => r.year >= 2016 && r.year <= 2021);
+    const avg = early.reduce((s, r) => s + r.hours_per_day, 0) / early.length;
+    const top = pd.reduce((m, r) => (r.hours_per_day > m.hours_per_day ? r : m));
+    para("s3", txt("Entre 2016 e 2021, um dia de escuta rendia cerca de "), `${nf1.format(avg)} h`, txt(". Em "), top.year, txt(" chegou a "), `${nf1.format(top.hours_per_day)} h`, txt(" por dia ativo, cerca de "), `${nf1.format(top.hours_per_day / avg)}×`, txt(" mais."));
+    bar("c-pace", pd.map((r) => r.year), pd.map((r) => r.hours_per_day), "Horas por dia ativo");
+
+    para("s4", `${nf1.format(st.night_share)}%`, txt(" de tudo que ouvi foi entre meia-noite e 6h. A maior sequência foi de "), nf.format(st.longest_streak.days), txt(" dias seguidos ("), dateBR(st.longest_streak.start), txt(" a "), dateBR(st.longest_streak.end), txt("), e o dia mais intenso teve "), `${nf1.format(st.biggest_day.hours)} h`, txt(" de música ("), dateBR(st.biggest_day.date), txt(")."));
+
+    const flip = dominantRows.find((r) => r.artist_name !== st.top_artist);
+    if (flip) para("s5", txt("Em "), flip.year, txt(", pela primeira vez, "), flip.artist_name, txt(" passou "), st.top_artist, txt(" como artista mais ouvido do ano. A casa continua lá, mas agora divide o espaço com muito mais gente."));
+    else para("s5", st.top_artist, txt(" continua sendo o artista mais ouvido de todos os anos."));
+  }
+
+  const REASONS = {
+    trackdone: "Tocou até o fim", fwdbtn: "Avançar", clickrow: "Escolhi a faixa", backbtn: "Voltar",
+    endplay: "Parei / encerrei", appload: "Abri o app", playbtn: "Play", remote: "Controle remoto",
+    "unexpected-exit-while-paused": "Saída com pausa", "unexpected-exit": "Saída inesperada", logout: "Logout",
+    unknown: "Desconhecido", outros: "Outros",
+  };
+  function reasonList(id, rows, overrides = {}) {
+    const root = document.getElementById(id);
+    const shown = rows.slice(0, 5);
+    const rest = rows.slice(5).reduce((s, r) => s + r.share, 0);
+    if (rest > 0) shown.push({ reason: "outros", share: rest });
+    shown.forEach((r) => {
+      const li = el("li");
+      const lb = el("div", "lb");
+      lb.append(el("span", null, overrides[r.reason] || REASONS[r.reason] || r.reason));
+      li.append(lb, el("div", "vl", `${nf1.format(r.share)}%`));
+      root.append(li);
+    });
+  }
+
   async function main() {
-    const [summary, byYear, dominantRows, heat, byHour, byWeekday, diversity, discovery, artists, tracks, obsession, skips] =
+    const [summary, byYear, dominantRows, heat, byHour, byWeekday, diversity, discovery, artists, tracks, obsession, skips, st, endings] =
       await Promise.all([
         get("/api/summary"), get("/api/by-year"), get("/api/dominant-artist-per-year"), get("/api/heatmap"),
         get("/api/by-hour"), get("/api/by-weekday"), get("/api/diversity-per-year"),
         get("/api/discovery?artists=15"), get("/api/top-artists?limit=15"), get("/api/top-tracks?limit=12"),
         get("/api/obsession-days?limit=12"), get("/api/skip-rate?limit=20"),
+        get("/api/story"), get("/api/endings"),
       ]);
 
     cards(summary);
+    story(st, dominantRows);
+    reasonList("l-start", endings.start, { trackdone: "Veio da faixa anterior", fwdbtn: "Avancei da anterior", backbtn: "Voltei à anterior" });
+    reasonList("l-end", endings.end);
     bar("c-year", byYear.map((r) => r.year), byYear.map((r) => r.hours), "Horas");
     dominant(dominantRows);
     heatmap(heat);
