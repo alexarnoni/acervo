@@ -1,3 +1,4 @@
-// Base da API. Vazio = mesma origem (docker-compose local, nginx faz proxy de /api).
-// No Cloudflare Pages, aponte para o subdominio da API, ex.: "https://api-musica.alexarnoni.com"
+// "static": le os JSONs de ./data (gerados por database/export_static.py) - nao precisa de servidor.
+// "api": chama a API FastAPI (API_BASE vazio = mesma origem, como no docker-compose local).
+window.DATA_MODE = "static";
 window.API_BASE = "";

@@ -5,8 +5,12 @@
   const nf = new Intl.NumberFormat("pt-BR");
   const nf1 = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 });
 
+  const STATIC = window.DATA_MODE !== "api";
+
+  // "/api/top-artists?limit=15" -> "data/top-artists.json" (os parametros ja foram fixados no export)
   const get = async (path) => {
-    const r = await fetch(API + path);
+    const url = STATIC ? "data/" + path.replace(/^\/api\//, "").split("?")[0] + ".json" : API + path;
+    const r = await fetch(url);
     if (!r.ok) throw new Error(`${path}: ${r.status}`);
     return r.json();
   };

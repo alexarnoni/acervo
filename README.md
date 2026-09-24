@@ -121,7 +121,22 @@ Abra http://localhost:8081. O `load_data.py` lê `data/processed/*.csv` (gerados
 
 Testes da API: `cd backend && pip install -r requirements-dev.txt && pytest`
 
-### Deploy (Oracle VM + Cloudflare)
+### Publicar (site estático, sem VM)
+
+O histórico é fixo (até 21/09/2026), então o site publicado não precisa de servidor: `database/export_static.py` roda as mesmas queries da API e grava `frontend/data/*.json`, e o `frontend/config.js` está em `DATA_MODE = "static"`.
+
+```bash
+# atualizar os dados (só se reprocessar o histórico): banco carregado + export
+DATABASE_URL=postgresql://spotify:spotify@localhost:5433/spotify python database/export_static.py
+```
+
+1. Faça push do repo (os JSONs de `frontend/data/` são versionados; os CSVs não).
+2. Cloudflare Pages: conecte o repo `musica-analytics`, sem build, diretório de saída `frontend`.
+3. Domínio customizado do projeto Pages: `musica.alexarnoni.com` (o DNS é criado pelo próprio Pages).
+
+Para usar a API ao vivo em vez dos JSONs, ponha `DATA_MODE = "api"` no `config.js` e siga o deploy abaixo.
+
+### Deploy com API ao vivo (opcional: Oracle VM + Cloudflare)
 
 1. Na VM: clone o repo, `cp .env.example .env` e troque `POSTGRES_PASSWORD` e `CORS_ORIGINS`.
 2. Copie `data/processed/*.csv` para a VM (não são versionados) e rode `docker compose up -d db api`, depois o `load_data.py`.
