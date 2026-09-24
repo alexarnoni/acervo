@@ -1,8 +1,17 @@
 # Acervo
 
-Projeto de portfólio para vaga de Data Analyst júnior: transforma o histórico completo do
-Spotify Extended Streaming History (2014-2026, ~413 mil eventos de reprodução) em um modelo
-dimensional limpo, pronto para consumo no Power BI.
+Projeto de dados de ponta a ponta sobre 12 anos do meu próprio histórico de escuta musical
+(2014-2026, cerca de 413 mil eventos brutos do Spotify Extended Streaming History): limpeza e
+validação em Python, modelagem em esquema estrela, relatório em Power BI e um dashboard público
+que conta como o gosto mudou ao longo do tempo.
+
+**Ao vivo:** https://musica.alexarnoni.com
+
+- **Pipeline (Python + pandas):** separa podcasts, remove ruído e duplicados, retira IP e localização e valida chaves e faixas de data, com testes automatizados.
+- **Modelo estrela:** `fact_streams` e `dim_artist`, `dim_track`, `dim_date`, prontos para Power BI (queries M e medidas DAX incluídas).
+- **Qualidade de dados:** o campo de skip do export vem vazio em 2017-2021, então a métrica é derivada do evento de encerramento; escutas de terceiros são removidas por janelas de data.
+- **Dashboard:** narrativa em cinco capítulos gerada a partir dos dados, feita em JavaScript puro com Chart.js e publicada de forma estática, sem servidor.
+- **API (opcional):** PostgreSQL + FastAPI somente leitura, para rodar localmente com Docker Compose.
 
 ## Pergunta de negócio
 
