@@ -97,3 +97,34 @@ spotify-analytics/
 - Arquivo `.pbix` do Power BI (montado manualmente apontando para os CSVs)
 - Modelos de machine learning ou detecção de anomalia avançada
 - Deploy
+
+## Dashboard web (spotify.alexarnoni.com)
+
+Camada pública e somente leitura do portfólio: `frontend/` (Vanilla JS + Chart.js) → `backend/` (FastAPI) → PostgreSQL com o mesmo schema estrela gerado pelo pipeline.
+O prompt de origem está em [`docs/prompt_spotify_site.md`](docs/prompt_spotify_site.md).
+
+```
+backend/    API FastAPI (só GET, CORS restrito, rate limit, cache)
+frontend/   dashboard estático (config.js define a URL da API)
+database/   setup_db.sql (schema) + load_data.py (carga dos CSVs)
+nginx/      proxy local e exemplo de produção
+```
+
+### Rodar localmente
+
+```bash
+docker compose up -d --build
+DATABASE_URL=postgresql://spotify:spotify@localhost:5433/spotify python database/load_data.py --truncate
+```
+
+Abra http://localhost:8081. O `load_data.py` lê `data/processed/*.csv` (gerados pelo pipeline), usa só as colunas do schema (IP e localização nunca entram) e descarta eventos duplicados do export.
+
+Testes da API: `cd backend && pip install -r requirements-dev.txt && pytest`
+
+### Deploy (Oracle VM + Cloudflare)
+
+1. Na VM: clone o repo, `cp .env.example .env` e troque `POSTGRES_PASSWORD` e `CORS_ORIGINS`.
+2. Copie `data/processed/*.csv` para a VM (não são versionados) e rode `docker compose up -d db api`, depois o `load_data.py`.
+3. Nginx do host: use `nginx/production.conf.example` (proxy para `127.0.0.1:8000`) — em produção mapeie a porta da API no compose (`ports: ["127.0.0.1:8000:8000"]`).
+4. Cloudflare DNS: registro do subdomínio da API apontando para o IP da VM (proxy ligado); libere 80/443 na Security List da OCI.
+5. Cloudflare Pages: publique `frontend/` e edite `frontend/config.js` (`API_BASE`) com a URL da API. Aponte `spotify.alexarnoni.com` para o projeto Pages.
