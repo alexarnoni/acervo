@@ -3,18 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Spotify Analytics · Alexandre Arnoni</title>
+<title>Escuta · Alexandre Arnoni</title>
 <meta name="description" content="12 anos de histórico de escuta no Spotify, modelados em schema estrela e servidos por FastAPI + PostgreSQL.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Música Analytics · 12 anos de música, em dados">
+<meta property="og:title" content="Escuta · 12 anos de música, em dados">
 <meta property="og:description" content="Cada play desde 2014, limpo em Python, modelado em estrela e contado em gráficos.">
-<meta property="og:url" content="https://musica.alexarnoni.com/">
+<meta property="og:url" content="https://escuta.alexarnoni.com/">
 <meta name="twitter:card" content="summary">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <header class="top"><div class="in">
-  <a class="brand" href="#top"><span class="dot" aria-hidden="true"></span>Música Analytics</a>
+  <a class="brand" href="#top" aria-label="Escuta, início"><svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><rect class="b1" x="1.5" y="9" width="4" height="13" rx="2"/><rect class="b2" x="7.5" y="2" width="4" height="20" rx="2"/><rect class="b3" x="13.5" y="6" width="4" height="16" rx="2"/><rect class="b4" x="19.5" y="11" width="3.5" height="11" rx="1.75"/></svg><span>Escuta</span></a>
   <nav aria-label="Seções">
     <a href="#historia">A história</a>
     <a href="#tempo">Ao longo do tempo</a>
@@ -25,7 +25,7 @@
   </nav>
   <div class="links">
     <a href="https://alexarnoni.com">Portfólio</a>
-    <a class="btn" href="https://github.com/alexarnoni/musica-analytics">GitHub</a>
+    <a class="btn" href="https://github.com/alexarnoni/escuta">GitHub</a>
   </div>
 </div></header>
 
@@ -97,21 +97,32 @@
   </section>
 
   <footer class="foot">
+    <div class="foot-top">
+      <div>
+        <a class="foot-word" href="#top"><svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><rect class="b1" x="1.5" y="9" width="4" height="13" rx="2"/><rect class="b2" x="7.5" y="2" width="4" height="20" rx="2"/><rect class="b3" x="13.5" y="6" width="4" height="16" rx="2"/><rect class="b4" x="19.5" y="11" width="3.5" height="11" rx="1.75"/></svg><span>Escuta</span></a>
+        <p class="foot-tag">12 anos de música, em dados.</p>
+      </div>
+      <a class="totop" href="#top">Voltar ao topo <span aria-hidden="true">&uarr;</span></a>
+    </div>
     <div class="foot-grid">
       <div>
-        <b class="foot-brand"><span class="dot" aria-hidden="true"></span>Música Analytics</b>
-        <p>Projeto de portfólio de dados por Alexandre Arnoni: pipeline, modelagem, Power BI e dashboard.</p>
+        <h3>O projeto</h3>
+        <p>Pipeline de dados, modelagem em estrela, Power BI e um dashboard público, feitos a partir do meu histórico de escuta.</p>
+      </div>
+      <div>
+        <h3>Explorar</h3>
+        <p><a href="#historia">A história</a><br><a href="#rankings">Rankings</a><br><a href="#como-foi-feito">Como foi feito</a></p>
       </div>
       <div>
         <h3>Stack</h3>
-        <p>Python · pandas · PostgreSQL · FastAPI · Power BI · JavaScript · Chart.js · Cloudflare Pages</p>
+        <p class="chips"><span>Python</span><span>pandas</span><span>PostgreSQL</span><span>FastAPI</span><span>Power BI</span><span>Chart.js</span></p>
       </div>
       <div>
         <h3>Links</h3>
-        <p><a href="https://github.com/alexarnoni/musica-analytics">Código no GitHub</a><br><a href="https://alexarnoni.com">alexarnoni.com</a></p>
+        <p><a href="https://github.com/alexarnoni/escuta">Código no GitHub</a><br><a href="https://alexarnoni.com">alexarnoni.com</a></p>
       </div>
     </div>
-    <p class="legal">Dados pessoais de escuta até 21/09/2026, do Spotify Extended Streaming History (somente músicas; IP e localização nunca foram carregados). Projeto independente, sem vínculo com o Spotify.</p>
+    <p class="legal">&copy; 2026 Alexandre Arnoni. Dados pessoais de escuta até 21/09/2026, do Spotify Extended Streaming History (somente músicas; IP e localização nunca foram carregados). Projeto independente, sem vínculo com o Spotify.</p>
   </footer>
 </main>
 

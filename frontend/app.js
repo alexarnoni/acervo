@@ -1,6 +1,6 @@
 (() => {
   const API = (window.API_BASE || "").replace(/\/$/, "");
-  const GREEN = "#1db954", MUTED = "#8e9993", GRID = "#262c29";
+  const GREEN = "#f5a524", MUTED = "#8e9993", GRID = "#262c29";
   const WEEKDAYS = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
   const nf = new Intl.NumberFormat("pt-BR");
   const nf1 = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 });
