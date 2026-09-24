@@ -9,25 +9,35 @@
 </head>
 <body>
 <header class="top"><div class="in">
-  <span class="brand">Spotify Analytics</span>
-  <span class="sub" id="range"></span>
+  <a class="brand" href="#top"><span class="dot" aria-hidden="true"></span>Música Analytics</a>
+  <nav aria-label="Seções">
+    <a href="#tempo">Ao longo do tempo</a>
+    <a href="#habitos">Hábitos</a>
+    <a href="#rankings">Rankings</a>
+    <a href="#curiosidades">Curiosidades</a>
+  </nav>
+  <div class="links">
+    <a href="https://alexarnoni.com">Portfólio</a>
+    <a class="btn" href="https://github.com/alexarnoni/musica-analytics">GitHub</a>
+  </div>
 </div></header>
 
 <main>
-  <section class="hero">
-    <h1>Meu histórico no Spotify</h1>
-    <p class="lede">Toda a minha escuta desde 2014, do export estendido do Spotify ao dashboard: pipeline em Python, schema estrela no PostgreSQL, API em FastAPI.</p>
+  <section class="hero" id="top">
+    <p class="eyebrow" id="range">Histórico de escuta</p>
+    <h1>12 anos de música, em dados</h1>
+    <p class="lede">Do export bruto do Spotify a um dashboard: cada play desde 2014, limpo em Python, modelado em estrela no PostgreSQL e contado em gráficos. Descubra quem dominou cada fase, quando eu mais ouço e quais músicas viraram obsessão.</p>
   </section>
 
   <div id="error" class="error" hidden></div>
 
   <section class="cards" id="cards" aria-label="Resumo"></section>
 
-  <section class="blk"><h2>Horas por ano</h2><div class="chart"><canvas id="c-year"></canvas></div></section>
+  <section class="blk" id="tempo"><h2>Horas por ano</h2><div class="chart"><canvas id="c-year"></canvas></div></section>
 
   <section class="blk"><h2>Quem dominou cada fase</h2><div class="dom" id="dominant"></div></section>
 
-  <section class="blk">
+  <section class="blk" id="habitos">
     <h2>Quando eu ouço</h2>
     <div class="heatwrap"><div class="heat" id="heat"></div></div>
     <div class="legend"><span>menos</span><span class="g"></span><span>mais horas</span></div>
@@ -41,16 +51,32 @@
 
   <section class="blk"><h2>Quando cada artista apareceu</h2><div class="tablewrap"><table id="t-discovery"><thead><tr><th>Artista</th><th>Primeira vez</th><th class="n">Horas</th><th class="n">Plays</th></tr></thead><tbody></tbody></table></div></section>
 
-  <section class="blk cols">
+  <section class="blk cols" id="rankings">
     <div><h2>Top artistas</h2><ol class="bl" id="l-artists"></ol></div>
     <div><h2>Top músicas</h2><ol class="bl" id="l-tracks"></ol></div>
   </section>
 
-  <section class="blk"><h2>Dias de obsessão</h2><p class="note">Dias em que uma mesma música tocou muitas vezes.</p><div class="tablewrap"><table id="t-obsession"><thead><tr><th>Data</th><th>Música</th><th>Artista</th><th class="n">Plays</th></tr></thead><tbody></tbody></table></div></section>
+  <section class="blk" id="curiosidades"><h2>Dias de obsessão</h2><p class="note">Dias em que uma mesma música tocou muitas vezes.</p><div class="tablewrap"><table id="t-obsession"><thead><tr><th>Data</th><th>Música</th><th>Artista</th><th class="n">Plays</th></tr></thead><tbody></tbody></table></div></section>
 
   <section class="blk"><h2>Taxa de skip por artista</h2><p class="note">Artistas mais ouvidos; skip = faixa pulada antes do fim.</p><ol class="bl" id="l-skip"></ol></section>
 
-  <footer class="foot">Dados pessoais de escuta até 21/09/2026, do Spotify Extended Streaming History (somente músicas; IP e localização nunca foram carregados). Projeto independente, sem vínculo com o Spotify. Código em <a href="https://github.com/alexarnoni/musica-analytics">github.com/alexarnoni/musica-analytics</a>.</footer>
+  <footer class="foot">
+    <div class="foot-grid">
+      <div>
+        <b class="foot-brand"><span class="dot" aria-hidden="true"></span>Música Analytics</b>
+        <p>Projeto de portfólio de dados por Alexandre Arnoni: pipeline, modelagem, Power BI e dashboard.</p>
+      </div>
+      <div>
+        <h3>Stack</h3>
+        <p>Python · pandas · PostgreSQL · FastAPI · Power BI · JavaScript · Chart.js · Cloudflare Pages</p>
+      </div>
+      <div>
+        <h3>Links</h3>
+        <p><a href="https://github.com/alexarnoni/musica-analytics">Código no GitHub</a><br><a href="https://alexarnoni.com">alexarnoni.com</a></p>
+      </div>
+    </div>
+    <p class="legal">Dados pessoais de escuta até 21/09/2026, do Spotify Extended Streaming History (somente músicas; IP e localização nunca foram carregados). Projeto independente, sem vínculo com o Spotify.</p>
+  </footer>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
