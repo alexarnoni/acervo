@@ -21,6 +21,7 @@
     <a href="#habitos">Hábitos</a>
     <a href="#rankings">Rankings</a>
     <a href="#curiosidades">Curiosidades</a>
+    <a href="#como-foi-feito">Como foi feito</a>
   </nav>
   <div class="links">
     <a href="https://alexarnoni.com">Portfólio</a>
@@ -78,6 +79,22 @@
     <div class="cols"><div><h3>Começou por</h3><ol class="bl nobar" id="l-start"></ol></div><div><h3>Terminou por</h3><ol class="bl nobar" id="l-end"></ol></div></div></section>
 
   <section class="blk"><h2>Taxa de skip por artista</h2><p class="note">Artistas mais ouvidos; skip = faixa encerrada no botão avançar.</p><ol class="bl" id="l-skip"></ol></section>
+
+  <section class="blk" id="como-foi-feito">
+    <h2>Como foi feito</h2>
+    <p class="note">Do export bruto do Spotify até esta página.</p>
+    <ol class="flow">
+      <li class="step"><span class="k">1 · Origem</span><b>Export do Spotify</b><p>JSONs do Extended Streaming History.</p><em>413 mil registros</em></li>
+      <li class="step"><span class="k">2 · Limpeza</span><b>Python + pandas</b><p>Separa podcasts, descarta plays sub-1s e duplicados, remove IP e localização e as escutas de terceiros.</p><em>316 mil plays de música</em></li>
+      <li class="step"><span class="k">3 · Modelagem</span><b>Esquema estrela</b><p><code>fact_streams</code> + <code>dim_artist</code>, <code>dim_track</code>, <code>dim_date</code>. Validação de chaves órfãs e testes.</p><em>CSVs prontos</em></li>
+      <li class="step split">
+        <span class="k">4 · Consumo</span>
+        <div class="branch"><b>Power BI</b><p>Queries M, medidas DAX e guia de visuais.</p></div>
+        <div class="branch"><b>PostgreSQL + FastAPI</b><p>API só de leitura, com CORS restrito, rate limit e cache.</p></div>
+      </li>
+      <li class="step"><span class="k">5 · Publicação</span><b>Site estático</b><p>Export dos resultados em JSON, JavaScript puro e Chart.js no Cloudflare Pages.</p><em>sem servidor</em></li>
+    </ol>
+  </section>
 
   <footer class="foot">
     <div class="foot-grid">
