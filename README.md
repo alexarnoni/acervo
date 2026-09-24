@@ -106,7 +106,7 @@ spotify-analytics/
 - Modelos de machine learning ou detecção de anomalia avançada
 - Deploy
 
-## Dashboard web (escuta.alexarnoni.com)
+## Dashboard web (musica.alexarnoni.com)
 
 Camada pública e somente leitura do portfólio: `frontend/` (Vanilla JS + Chart.js) → `backend/` (FastAPI) → PostgreSQL com o mesmo schema estrela gerado pelo pipeline.
 
@@ -139,7 +139,7 @@ DATABASE_URL=postgresql://spotify:spotify@localhost:5433/spotify python database
 
 1. Faça push do repo (os JSONs de `frontend/data/` são versionados; os CSVs não).
 2. Cloudflare Pages: conecte o repo `escuta`, sem build, diretório de saída `frontend`.
-3. Domínio customizado do projeto Pages: `escuta.alexarnoni.com` (o DNS é criado pelo próprio Pages).
+3. Domínio customizado do projeto Pages: `musica.alexarnoni.com` (o DNS é criado pelo próprio Pages).
 
 Para usar a API ao vivo em vez dos JSONs, ponha `DATA_MODE = "api"` no `config.js` e siga o deploy abaixo.
 
@@ -149,4 +149,4 @@ Para usar a API ao vivo em vez dos JSONs, ponha `DATA_MODE = "api"` no `config.j
 2. Copie `data/processed/*.csv` para a VM (não são versionados) e rode `docker compose up -d db api`, depois o `load_data.py`.
 3. Nginx do host: use `nginx/production.conf.example` (proxy para `127.0.0.1:$API_PORT` (padrão 8010; confira se está livre com `ss -tlnp`)); ajuste a porta no arquivo se mudar `API_PORT`.
 4. Cloudflare DNS: registro do subdomínio da API apontando para o IP da VM (proxy ligado); libere 80/443 na Security List da OCI.
-5. Cloudflare Pages: publique `frontend/` e edite `frontend/config.js` (`API_BASE`) com a URL da API. Aponte `escuta.alexarnoni.com` para o projeto Pages.
+5. Cloudflare Pages: publique `frontend/` e edite `frontend/config.js` (`API_BASE`) com a URL da API. Aponte `musica.alexarnoni.com` para o projeto Pages.
