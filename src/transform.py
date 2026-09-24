@@ -11,6 +11,21 @@ MIN_MS_PLAYED = 1000
 VALID_YEAR_MIN = 2014
 VALID_YEAR_MAX = 2026
 
+# Escutas de outra pessoa (conta emprestada a uma amiga): nao representam o gosto do dono do historico.
+# Cada regra remove os plays desses artistas somente dentro da janela de datas (inclusive).
+BORROWED_ACCOUNT_WINDOWS = [
+    (
+        "2018-12-01",
+        "2018-12-31",
+        {"Ariana Grande"},
+    ),
+    (
+        "2019-02-01",
+        "2019-02-18",
+        {"Ariana Grande", "Henrique & Juliano", "Marília Mendonça", "Maiara & Maraisa"},
+    ),
+]
+
 
 def split_content_types(raw: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Split raw events into music, podcast, and audiobook records.
@@ -66,6 +81,16 @@ def clean_music_streams(music: pd.DataFrame) -> pd.DataFrame:
         after_range,
     )
     return df.reset_index(drop=True)
+
+
+def drop_borrowed_listening(music: pd.DataFrame) -> pd.DataFrame:
+    """Remove plays feitos por terceiros na conta (ver BORROWED_ACCOUNT_WINDOWS)."""
+    day = pd.to_datetime(music["ts"], utc=True).dt.strftime("%Y-%m-%d")
+    drop = pd.Series(False, index=music.index)
+    for start, end, artists in BORROWED_ACCOUNT_WINDOWS:
+        drop |= day.between(start, end) & music["master_metadata_album_artist_name"].isin(artists)
+    logger.info("Dropped %d plays from borrowed-account windows", int(drop.sum()))
+    return music[~drop].reset_index(drop=True)
 
 
 def _stable_id(*parts: str) -> str:
@@ -183,6 +208,7 @@ def build_star_schema(raw: pd.DataFrame) -> dict[str, pd.DataFrame]:
     music, podcasts, audiobooks = split_content_types(raw)
     music_raw_count = len(music)
     music = clean_music_streams(music)
+    music = drop_borrowed_listening(music)
 
     return {
         "fact_streams": build_fact_streams(music),

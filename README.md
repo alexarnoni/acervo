@@ -40,6 +40,10 @@ Rodar os testes:
 pytest tests/ -v
 ```
 
+### Escutas de terceiros
+
+Em dez/2018 e fev/2019 a conta foi emprestada a uma amiga. Esses plays (Ariana Grande, Henrique & Juliano, Marília Mendonça e Maiara & Maraisa, só dentro dessas janelas) são removidos no pipeline por `drop_borrowed_listening` em `src/transform.py` (407 plays, ~18 h). A lista está em `BORROWED_ACCOUNT_WINDOWS`.
+
 ## Modelo de dados (esquema estrela)
 
 | Tabela | Grão | Chave |

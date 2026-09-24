@@ -9,6 +9,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from transform import (  # noqa: E402
+    drop_borrowed_listening,
     build_dim_artist,
     build_fact_streams,
     clean_music_streams,
@@ -101,3 +102,15 @@ def test_build_fact_streams_has_no_orphan_keys(sample_raw):
 
     assert fact["artist_id"].isin(dim_artist["artist_id"]).all()
     assert (fact["ms_played"] >= 1000).all()
+
+
+def test_drop_borrowed_listening_only_inside_window_and_artist():
+    rows = [
+        ("2018-12-05T10:00:00Z", "Ariana Grande"),  # emprestimo: sai
+        ("2018-12-05T10:00:00Z", "Arctic Monkeys"),  # mesmo dia, outro artista: fica
+        ("2020-01-01T10:00:00Z", "Ariana Grande"),  # fora da janela: fica
+        ("2019-02-10T10:00:00Z", "Henrique & Juliano"),  # sai
+    ]
+    df = pd.DataFrame(rows, columns=["ts", "master_metadata_album_artist_name"])
+    out = drop_borrowed_listening(df)
+    assert list(out["master_metadata_album_artist_name"]) == ["Arctic Monkeys", "Ariana Grande"]
