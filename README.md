@@ -1,4 +1,4 @@
-# Escuta
+# Acervo
 
 Projeto de portfólio para vaga de Data Analyst júnior: transforma o histórico completo do
 Spotify Extended Streaming History (2014-2026, ~413 mil eventos de reprodução) em um modelo
@@ -138,7 +138,7 @@ DATABASE_URL=postgresql://spotify:spotify@localhost:5433/spotify python database
 ```
 
 1. Faça push do repo (os JSONs de `frontend/data/` são versionados; os CSVs não).
-2. Cloudflare Pages: conecte o repo `escuta`, sem build, diretório de saída `frontend`.
+2. Cloudflare Pages: conecte o repo `acervo`, sem build, diretório de saída `frontend`.
 3. Domínio customizado do projeto Pages: `musica.alexarnoni.com` (o DNS é criado pelo próprio Pages).
 
 Para usar a API ao vivo em vez dos JSONs, ponha `DATA_MODE = "api"` no `config.js` e siga o deploy abaixo.
