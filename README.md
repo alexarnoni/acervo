@@ -13,6 +13,8 @@ que conta como o gosto mudou ao longo do tempo.
 - **Dashboard:** narrativa em cinco capítulos gerada a partir dos dados, feita em JavaScript puro com Chart.js e publicada de forma estática, sem servidor.
 - **API (opcional):** PostgreSQL + FastAPI somente leitura, para rodar localmente com Docker Compose.
 
+Ideias e próximos passos estão em [`ROADMAP.md`](ROADMAP.md).
+
 ## Pergunta de negócio
 
 **Como meu comportamento de escuta mudou ao longo de 12 anos?**
@@ -51,7 +53,9 @@ pytest tests/ -v
 
 ### Escutas de terceiros
 
-Em dez/2018 e fev/2019 a conta foi emprestada a uma amiga. Esses plays (Ariana Grande, Henrique & Juliano, Marília Mendonça e Maiara & Maraisa, só dentro dessas janelas) são removidos no pipeline por `drop_borrowed_listening` em `src/transform.py` (407 plays, ~18 h). A lista está em `BORROWED_ACCOUNT_WINDOWS`.
+A conta foi emprestada a outras pessoas em alguns períodos (dez/2018, jun-jul/2018, fev/2019). Esses plays são removidos no pipeline por `drop_borrowed_listening` em `src/transform.py` (768 plays, ~37 h), só para os artistas listados e dentro de cada janela de datas (`BORROWED_ACCOUNT_WINDOWS`).
+
+Para não depender de memória, `src/anomalies.py` sugere candidatos: artistas com mais da metade dos plays numa janela de 21 dias. A lista é revisada à mão, porque uma rajada também pode ser um álbum novo que virou obsessão.
 
 ### Skip
 

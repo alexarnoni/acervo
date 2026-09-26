@@ -8,6 +8,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
+from anomalies import detect_bursty_artists  # noqa: E402
 from transform import (  # noqa: E402
     drop_borrowed_listening,
     build_dim_artist,
@@ -114,3 +115,13 @@ def test_drop_borrowed_listening_only_inside_window_and_artist():
     df = pd.DataFrame(rows, columns=["ts", "master_metadata_album_artist_name"])
     out = drop_borrowed_listening(df)
     assert list(out["master_metadata_album_artist_name"]) == ["Arctic Monkeys", "Ariana Grande"]
+
+
+def test_detect_bursty_artists_flags_concentrated_artist_only():
+    burst = pd.date_range("2019-02-01", periods=100, freq="6h", tz="UTC")  # 100 plays em ~25 dias
+    steady = pd.date_range("2015-01-01", periods=100, freq="30D", tz="UTC")  # 100 plays espalhados
+    rows = [(ts, "Rajada", 200000) for ts in burst] + [(ts, "Constante", 200000) for ts in steady]
+    df = pd.DataFrame(rows, columns=["ts", "master_metadata_album_artist_name", "ms_played"])
+    out = detect_bursty_artists(df, min_plays=80, window_days=30)
+    assert list(out["artist"]) == ["Rajada"]
+    assert out.loc[0, "burst_share"] == 1.0

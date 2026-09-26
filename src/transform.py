@@ -20,6 +20,11 @@ BORROWED_ACCOUNT_WINDOWS = [
         {"Ariana Grande"},
     ),
     (
+        "2018-06-15",
+        "2018-07-31",
+        {"Thiaguinho", "Ciara", "Ella Mai"},
+    ),
+    (
         "2019-02-01",
         "2019-02-18",
         {"Ariana Grande", "Henrique & Juliano", "Marília Mendonça", "Maiara & Maraisa"},
