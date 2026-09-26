@@ -1,5 +1,6 @@
 """End-to-end pipeline: ingest raw JSONs, transform into star schema, validate, write CSVs."""
 
+import json
 import logging
 from pathlib import Path
 
@@ -34,6 +35,10 @@ def run() -> None:
     dim_track.to_csv(PROCESSED_DIR / "dim_track.csv", index=False)
     dim_date.to_csv(PROCESSED_DIR / "dim_date.csv", index=False)
     logger.info("Wrote star schema CSVs to %s", PROCESSED_DIR)
+    tables["anomalies"]["candidates"].to_csv(PROCESSED_DIR / "anomaly_candidates.csv", index=False)
+    site_data = PROJECT_ROOT / "frontend" / "data"
+    site_data.mkdir(parents=True, exist_ok=True)
+    (site_data / "anomalies.json").write_text(json.dumps(tables["anomalies"]["summary"]), encoding="utf-8")
 
     report = build_quality_report(
         raw_count=len(raw),

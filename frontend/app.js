@@ -171,6 +171,120 @@
     });
   }
 
+  // dados que so existem como JSON estatico (gerados por src/insights.py)
+  const getStatic = async (name) => {
+    const r = await fetch(`data/${name}.json`);
+    if (!r.ok) throw new Error(`${name}: ${r.status}`);
+    return r.json();
+  };
+  const MONTHS = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+  const ym = (s) => { const [y, m] = s.split("-"); return `${MONTHS[+m - 1]}/${y}`; };
+  const join = (names) => names.join(", ");
+
+  function eras(data) {
+    const bar = document.getElementById("eras-bar");
+    const root = document.getElementById("eras");
+    const total = data.eras.reduce((s, e) => s + e.months, 0);
+    data.eras.forEach((e, i) => {
+      const seg = el("i");
+      seg.style.flex = `${e.months} 1 0`;
+      seg.style.opacity = String(0.35 + 0.65 * ((i + 1) / data.eras.length));
+      seg.title = `${ym(e.start)} a ${ym(e.end)}`;
+      bar.append(seg);
+
+      const c = el("div", "era");
+      c.append(el("small", null, `Fase ${i + 1} · ${e.months} meses`));
+      c.append(el("h4", null, `${ym(e.start)} a ${ym(e.end)}`));
+      const p1 = el("p");
+      p1.append(el("b", null, "Mais ouvidos: "), document.createTextNode(join(e.top_artists.map((a) => a.artist_name))));
+      const p2 = el("p");
+      p2.append(el("b", null, "Marca da fase: "), document.createTextNode(join(e.signature_artists)));
+      const p3 = el("p");
+      p3.append(el("b", null, `${nf.format(Math.round(e.hours))} h`), document.createTextNode(` (${nf1.format((100 * e.months) / total)}% do tempo)`));
+      c.append(p1, p2, p3);
+      root.append(c);
+    });
+  }
+
+  function calendar(data) {
+    const byDate = new Map(data.days);
+    const vals = data.days.map((d) => d[1]).filter((v) => v > 0).sort((a, b) => a - b);
+    const q = (p) => vals[Math.floor(p * (vals.length - 1))];
+    const t1 = q(0.25), t2 = q(0.5), t3 = q(0.75);
+    const level = (h) => (h <= 0 ? 0 : h < t1 ? 1 : h < t2 ? 2 : h < t3 ? 3 : 4);
+    const years = [...new Set(data.days.map((d) => +d[0].slice(0, 4)))];
+    const root = document.getElementById("cal");
+    years.forEach((y) => {
+      const row = el("div", "cal-year");
+      row.append(el("b", null, String(y)));
+      const grid = el("div", "cal-grid");
+      const start = new Date(Date.UTC(y, 0, 1));
+      const end = new Date(Date.UTC(y, 11, 31));
+      const offset = (start.getUTCDay() + 6) % 7; // segunda = 0
+      for (let d = new Date(start), i = 0; d <= end; d.setUTCDate(d.getUTCDate() + 1), i++) {
+        const iso = d.toISOString().slice(0, 10);
+        const h = byDate.get(iso) || 0;
+        const cell = el("i", level(h) ? `l${level(h)}` : "");
+        if (i === 0) cell.style.gridRowStart = String(offset + 1);
+        cell.title = `${dateBR(iso)}: ${nf1.format(h)} h`;
+        grid.append(cell);
+      }
+      row.append(grid);
+      root.append(row);
+    });
+  }
+
+  function survival(s) {
+    const at = (curve, yrs) => curve[s.years.indexOf(yrs)];
+    const p5 = Math.round(at(s.all, 5) * 100);
+    document.getElementById("surv-text").textContent =
+      `${p5}% dos artistas que ouvi pelo menos 3 vezes ainda estavam na rotação 5 anos depois de descobertos. As curvas mostram cada geração de descobertas.`;
+    document.getElementById("surv-rule").textContent = `Curva de sobrevivência (Kaplan-Meier). ${s.rule}.`;
+    const COLORS = ["#f5a524", "#22d3ee", "#a78bfa", "#f472b6"];
+    new Chart(document.getElementById("c-surv"), {
+      type: "line",
+      data: {
+        labels: s.years,
+        datasets: s.cohorts.map((c, i) => ({
+          label: `${c.cohort} (${c.artists} artistas)`,
+          data: c.survival.map((v) => Math.round(v * 100)),
+          borderColor: COLORS[i % COLORS.length], backgroundColor: COLORS[i % COLORS.length],
+          pointRadius: 0, tension: 0.15, borderWidth: 2,
+        })),
+      },
+      options: {
+        maintainAspectRatio: false,
+        scales: { y: { min: 0, max: 100, ticks: { callback: (v) => v + "%" } }, x: { title: { display: true, text: "anos desde a descoberta" } } },
+        plugins: { legend: { position: "bottom" } },
+      },
+    });
+  }
+
+  function rediscoveries(r) {
+    const years = r.by_year.filter((y) => y.year >= 2016);
+    const peak = years.reduce((m, y) => (y.share > m.share ? y : m));
+    const early = years.filter((y) => y.year <= 2020);
+    const avg = early.reduce((s, y) => s + y.share, 0) / early.length;
+    document.getElementById("redis-text").textContent =
+      `Em ${peak.year}, ${nf1.format(peak.share)}% dos plays foram de músicas que voltaram depois de mais de um ano paradas, contra ${nf1.format(avg)}% entre 2016 e 2020.`;
+    bar("c-redis", years.map((y) => y.year), years.map((y) => y.share), "% dos plays", {
+      options: { scales: { y: { ticks: { callback: (v) => v + "%" } } } },
+    });
+    const root = document.getElementById("l-redis");
+    r.longest.slice(0, 5).forEach((t) => {
+      const li = el("li");
+      const lb = el("div", "lb");
+      lb.append(el("span", null, t.track_name), el("small", null, t.artist_name));
+      li.append(lb, el("div", "vl", `${nf1.format(t.gap_years)} anos`));
+      root.append(li);
+    });
+  }
+
+  function detector(a) {
+    document.getElementById("detector").textContent =
+      `Detector de escutas atípicas: sinalizou ${a.flagged_artists} artistas com mais da metade dos plays concentrada em 21 dias. Depois de revisar à mão, removi ${nf.format(a.removed_plays)} plays (${nf1.format(a.removed_hours)} h) de outras pessoas que usaram a conta.`;
+  }
+
   async function main() {
     const [summary, byYear, dominantRows, heat, byHour, byWeekday, diversity, discovery, artists, tracks, obsession, skips, st, endings] =
       await Promise.all([
@@ -182,6 +296,9 @@
       ]);
 
     cards(summary);
+    Promise.all([getStatic("eras"), getStatic("calendar"), getStatic("survival"), getStatic("rediscoveries"), getStatic("anomalies")])
+      .then(([er, cal, sv, rd, an]) => { eras(er); calendar(cal); survival(sv); rediscoveries(rd); detector(an); })
+      .catch((e) => console.error(e));
     story(st, dominantRows);
     reasonList("l-start", endings.start, { trackdone: "Veio da faixa anterior", fwdbtn: "Avancei da anterior", backbtn: "Voltei à anterior" });
     reasonList("l-end", endings.end);

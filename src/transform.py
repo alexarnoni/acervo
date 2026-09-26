@@ -5,6 +5,8 @@ import logging
 
 import pandas as pd
 
+from anomalies import detect_bursty_artists
+
 logger = logging.getLogger(__name__)
 
 MIN_MS_PLAYED = 1000
@@ -213,7 +215,14 @@ def build_star_schema(raw: pd.DataFrame) -> dict[str, pd.DataFrame]:
     music, podcasts, audiobooks = split_content_types(raw)
     music_raw_count = len(music)
     music = clean_music_streams(music)
+    candidates = detect_bursty_artists(music)
+    plays_before, hours_before = len(music), music["ms_played"].sum() / 3_600_000
     music = drop_borrowed_listening(music)
+    borrowed = {
+        "flagged_artists": int(len(candidates)),
+        "removed_plays": int(plays_before - len(music)),
+        "removed_hours": round(float(hours_before - music["ms_played"].sum() / 3_600_000), 1),
+    }
 
     return {
         "fact_streams": build_fact_streams(music),
@@ -223,4 +232,5 @@ def build_star_schema(raw: pd.DataFrame) -> dict[str, pd.DataFrame]:
         "podcasts": podcasts,
         "audiobooks": audiobooks,
         "music_raw_count": music_raw_count,
+        "anomalies": {"candidates": candidates, "summary": borrowed},
     }

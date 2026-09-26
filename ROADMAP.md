@@ -4,12 +4,12 @@ Ideias para o Acervo, separadas em o que está no plano e o que ficou de fora po
 
 ## No plano (fase atual)
 
-- [ ] Detecção automática de anomalias (períodos de escuta atípica, como conta emprestada)
+- [x] Detecção automática de anomalias (períodos de escuta atípica, como conta emprestada)
 - [ ] Idade da música que eu ouço (ano de lançamento via MusicBrainz)
-- [ ] Sobrevivência de artistas (Kaplan-Meier): quanto tempo um artista descoberto continua sendo ouvido
-- [ ] Redescobertas / nostalgia: faixas que voltaram depois de mais de um ano parado
-- [ ] Eras automáticas: clustering dos meses pela mistura de artistas
-- [ ] Calendário de escuta, dia a dia (estilo GitHub)
+- [x] Sobrevivência de artistas (Kaplan-Meier): quanto tempo um artista descoberto continua sendo ouvido
+- [x] Redescobertas / nostalgia: faixas que voltaram depois de mais de um ano parado
+- [x] Eras automáticas: clustering dos meses pela mistura de artistas
+- [x] Calendário de escuta, dia a dia (estilo GitHub)
 
 ## Ideias guardadas para depois
 

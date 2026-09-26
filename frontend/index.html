@@ -17,10 +17,11 @@
   <a class="brand" href="#top" aria-label="Acervo, início"><svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><rect class="b1" x="1.5" y="9" width="4" height="13" rx="2"/><rect class="b2" x="7.5" y="2" width="4" height="20" rx="2"/><rect class="b3" x="13.5" y="6" width="4" height="16" rx="2"/><rect class="b4" x="19.5" y="11" width="3.5" height="11" rx="1.75"/></svg><span>Acervo</span></a>
   <nav aria-label="Seções">
     <a href="#historia">A história</a>
-    <a href="#tempo">Ao longo do tempo</a>
+    <a href="#fases">Fases</a>
     <a href="#habitos">Hábitos</a>
     <a href="#rankings">Rankings</a>
     <a href="#curiosidades">Curiosidades</a>
+    <a href="#fidelidade">Fidelidade</a>
     <a href="#como-foi-feito">Como foi feito</a>
   </nav>
   <div class="links">
@@ -48,6 +49,18 @@
     <article class="chap"><h3><span>3</span>O ritmo aumentou</h3><p id="s3"></p><div class="chart short"><canvas id="c-pace"></canvas></div></article>
     <article class="chap"><h3><span>4</span>Uma coruja com rotina</h3><p id="s4"></p></article>
     <article class="chap"><h3><span>5</span>A virada</h3><p id="s5"></p></article>
+  </section>
+
+  <section class="blk" id="fases">
+    <h2>As fases, encontradas sozinhas</h2>
+    <p class="note">Um algoritmo agrupou os meses pela mistura de artistas e achou os pontos de virada, sem que eu dissesse onde. Cada fase tem pelo menos seis meses.</p>
+    <div class="eras-bar" id="eras-bar" aria-hidden="true"></div>
+    <div class="eras" id="eras"></div>
+
+    <h3 class="sub">Cada dia, em um calendário</h3>
+    <p class="note">Quanto mais forte a cor, mais horas de música naquele dia. Passe o mouse sobre um quadrado.</p>
+    <div class="calwrap"><div class="cal" id="cal"></div></div>
+    <div class="legend"><span>menos</span><span class="g"></span><span>mais horas</span></div>
   </section>
 
   <section class="blk" id="tempo"><h2>Horas por ano</h2><div class="chart"><canvas id="c-year"></canvas></div></section>
@@ -80,6 +93,24 @@
 
   <section class="blk"><h2>Taxa de skip por artista</h2><p class="note">Artistas mais ouvidos; skip = faixa encerrada no botão avançar.</p><ol class="bl" id="l-skip"></ol></section>
 
+  <section class="blk" id="fidelidade">
+    <h2>Fidelidade: quem fica e quem volta</h2>
+    <div class="cols">
+      <div>
+        <h3>Quanto tempo um artista sobrevive</h3>
+        <p class="note" id="surv-text"></p>
+        <div class="chart"><canvas id="c-surv"></canvas></div>
+        <p class="note small" id="surv-rule"></p>
+      </div>
+      <div>
+        <h3>Músicas que voltaram</h3>
+        <p class="note" id="redis-text"></p>
+        <div class="chart"><canvas id="c-redis"></canvas></div>
+        <ol class="bl nobar" id="l-redis"></ol>
+      </div>
+    </div>
+  </section>
+
   <section class="blk" id="como-foi-feito">
     <h2>Como foi feito</h2>
     <p class="note">Do export bruto do Spotify até esta página.</p>
@@ -94,6 +125,7 @@
       </li>
       <li class="step"><span class="k">5 · Publicação</span><b>Site estático</b><p>Export dos resultados em JSON, JavaScript puro e Chart.js no Cloudflare Pages.</p><em>sem servidor</em></li>
     </ol>
+    <p class="note detector" id="detector"></p>
   </section>
 
   <footer class="foot">

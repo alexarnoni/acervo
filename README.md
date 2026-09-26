@@ -51,6 +51,19 @@ Rodar os testes:
 pytest tests/ -v
 ```
 
+### Análises do site
+
+`src/insights.py` gera, a partir dos CSVs processados, os JSONs de `frontend/data/` que alimentam as seções do site, só com numpy e pandas:
+
+- **Eras automáticas:** segmentação ótima por programação dinâmica dos meses (distância de Hellinger sobre a mistura de artistas), com fases de pelo menos 6 meses.
+- **Sobrevivência de artistas:** curva de Kaplan-Meier por geração de descoberta (artistas com 3+ plays; abandonado = sem tocar por mais de 365 dias).
+- **Redescobertas:** plays de faixas que voltaram depois de mais de um ano paradas.
+- **Calendário:** horas por dia, 2014-2026.
+
+```bash
+cd src && python pipeline.py && python insights.py
+```
+
 ### Escutas de terceiros
 
 A conta foi emprestada a outras pessoas em alguns períodos (dez/2018, jun-jul/2018, fev/2019). Esses plays são removidos no pipeline por `drop_borrowed_listening` em `src/transform.py` (768 plays, ~37 h), só para os artistas listados e dentro de cada janela de datas (`BORROWED_ACCOUNT_WINDOWS`).
