@@ -1,0 +1,72 @@
+[
+  {
+    "ts": "2020-06-01T12:00:00Z",
+    "ms_played": 180000,
+    "platform": "web_player",
+    "master_metadata_track_name": "Farol de Papel",
+    "master_metadata_album_artist_name": "Banda Exemplo",
+    "master_metadata_album_album_name": "Mapa Inventado",
+    "episode_name": null,
+    "audiobook_title": null,
+    "skipped": false,
+    "shuffle": false,
+    "reason_start": "clickrow",
+    "reason_end": "trackdone"
+  },
+  {
+    "ts": "2020-06-01T12:00:00Z",
+    "ms_played": 180000,
+    "platform": "web_player",
+    "master_metadata_track_name": "Farol de Papel",
+    "master_metadata_album_artist_name": "Banda Exemplo",
+    "master_metadata_album_album_name": "Mapa Inventado",
+    "episode_name": null,
+    "audiobook_title": null,
+    "skipped": false,
+    "shuffle": false,
+    "reason_start": "clickrow",
+    "reason_end": "trackdone"
+  },
+  {
+    "ts": "2020-06-02T12:00:00Z",
+    "ms_played": 12000,
+    "platform": "web_player",
+    "master_metadata_track_name": "Rua Imaginária",
+    "master_metadata_album_artist_name": "Banda Exemplo",
+    "master_metadata_album_album_name": "Mapa Inventado",
+    "episode_name": null,
+    "audiobook_title": null,
+    "skipped": null,
+    "shuffle": false,
+    "reason_start": "clickrow",
+    "reason_end": "fwdbtn"
+  },
+  {
+    "ts": "2020-06-02T12:01:00Z",
+    "ms_played": 500,
+    "platform": "web_player",
+    "master_metadata_track_name": "Farol de Papel",
+    "master_metadata_album_artist_name": "Banda Exemplo",
+    "master_metadata_album_album_name": "Mapa Inventado",
+    "episode_name": null,
+    "audiobook_title": null,
+    "skipped": false,
+    "shuffle": false,
+    "reason_start": "clickrow",
+    "reason_end": "trackdone"
+  },
+  {
+    "ts": "2020-06-02T13:00:00Z",
+    "ms_played": 180000,
+    "platform": "web_player",
+    "master_metadata_track_name": null,
+    "master_metadata_album_artist_name": null,
+    "master_metadata_album_album_name": null,
+    "episode_name": "Episódio de Exemplo",
+    "audiobook_title": null,
+    "skipped": false,
+    "shuffle": false,
+    "reason_start": "clickrow",
+    "reason_end": "trackdone"
+  }
+]
