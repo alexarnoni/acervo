@@ -27,6 +27,29 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
+### Experimente com dados sintéticos
+
+Em um clone separado, sem exportações pessoais em `data/raw/`, copie a
+[amostra sintética](examples/Streaming_History_Audio_demo.json) e execute o pipeline a partir da raiz.
+Use um clone separado porque o pipeline lê todos os arquivos de entrada e sobrescreve as saídas.
+
+```bash
+mkdir -p data/raw
+cp examples/Streaming_History_Audio_demo.json data/raw/
+python src/pipeline.py
+```
+
+No PowerShell, use `New-Item -ItemType Directory -Force data/raw` para criar
+a pasta e `Copy-Item examples/Streaming_History_Audio_demo.json data/raw/` para copiar a amostra.
+
+O relatório `data/processed/data_quality_report.md` deve mostrar **5 eventos brutos,
+1 podcast separado e 2 linhas na tabela fato**. Uma reprodução duplicada e outra
+de 500 ms são descartadas. As dimensões têm 1 artista, 2 faixas e 2 dias.
+Em `fact_streams.csv`, a segunda reprodução tem `skipped` vazio e
+`reason_end = fwdbtn`, que o dashboard usa para identificar o avanço manual.
+
+### Use seu histórico do Spotify
+
 Coloque os arquivos `Streaming_History_Audio_*.json` do seu export do Spotify em
 `data/raw/` (mantendo a subpasta `Spotify Extended Streaming History/` ou direto em
 `data/raw/`, o pipeline busca recursivamente).
